@@ -1,3 +1,4 @@
+ Запросы, групповые операции.
 +---------+-----------------------+------------------+--------+--------+
 | book_id | title                 | author           | price  | amount |
 +---------+-----------------------+------------------+--------+--------+
@@ -21,4 +22,46 @@ avg(price) as Средняя_цена
 FROM book
 GROUP BY author;
 
-/*, Групповые функции SUM и COUNT*/
+/*Для каждого автора вычислить суммарную стоимость книг, не включая НДС*/
+SELECT author, 
+    SUM(price*amount) AS Стоимость, 
+    ROUND(SUM(price*amount)*0.18 / 1.18, 2) AS НДС,
+    ROUND(SUM(price*amount) / 1.18,2) AS Стоимость_без_НДС
+FROM book
+GROUP BY author;
+
+/*Вычисления по таблице целиком*/
+
+SELECT min(price) as Минимальная_цена, max(price) as Максимальная_цена,
+ROUND(avg(price), 2) as Средняя_цена
+FROM book
+
+/*Выборка данных по условию, групповые функции*/
+SELECT ROUND(AVG(price), 2) AS Средняя_цена,
+    ROUND(SUM(price*amount), 2) AS Стоимость
+FROM book
+WHERE amount BETWEEN 5 AND 14;
+
+/*
+1) FROM
+2) WHERE
+3) GROUP BY
+4) HAVING
+5) SELECT
+6) ORDER BY  */
+
+/*Выборка данных по условию, групповые функции, WHERE и HAVING*/
+SELECT author, 
+    SUM(price * amount) AS Стоимость 
+FROM book 
+WHERE title <> 'Идиот' AND title <> 'Белая гвардия' 
+GROUP BY author 
+HAVING SUM(price*amount) > 5000 
+ORDER BY Стоимость dESC
+
+
+SELECT author as Автор,
+    ROUND(AVG(price),2) as "Средняя цена"
+FROM book
+WHERE amount > 3
+GROUP BY author
